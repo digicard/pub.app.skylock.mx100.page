@@ -1,0 +1,85 @@
+# Simple workflow for deploying static content to GitHub Pages
+name: Deploy mx100 scripts content to Pages
+
+on:
+  # Runs on pushes targeting the default branch
+  push:
+    # branches: ["main"]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  # Single deploy job since we're just deploying
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            setup
+
+          # Repository name with owner. For example, actions/checkout
+          # Default: ${{ github.repository }}
+          repository: 'digicard/dev.app.skylock.mx100'
+
+          # The branch, tag or SHA to checkout. When checking out the repository that
+          # triggered a workflow, this defaults to the reference or SHA for that event.
+          # Otherwise, uses the default branch.
+          # Poner en VAR
+          ref: '${MX100_BRANCH}'
+
+          # Personal access token (PAT) used to fetch the repository. The PAT is configured
+          # with the local git config, which enables your scripts to run authenticated git
+          # commands. The post-job step removes the PAT.
+          #
+          # We recommend using a service account with the least permissions necessary. Also
+          # when generating a new PAT, select the least scopes necessary.
+          #
+          # [Learn more about creating and using encrypted secrets](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets)
+          #
+          # Default: ${{ github.token }}
+          # Poner en Secret VAR
+          token: '${MX100_PAT}'
+
+          # Relative path under $GITHUB_WORKSPACE to place the repository
+          path: ''
+
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Copy files
+        run: |
+          # Copy the install script to the public directory
+          cp setup/install.sh public
+
+          # Create drivers directory and copy driver files
+          mkdir -p public/drivers
+          cp setup/drivers/* public/drivers
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Upload entire repository
+          path: 'public'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
