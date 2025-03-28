@@ -66,11 +66,12 @@ jobs:
 
       - name: Copy files
         run: |
+          mkdir -p public/drivers
+
           # Copy the install script to the public directory
           cp setup/install.sh public
 
           # Create drivers directory and copy driver files
-          mkdir -p public/drivers
           cp setup/drivers/* public/drivers
 
       - name: Upload artifact
