@@ -43,7 +43,7 @@ jobs:
           # triggered a workflow, this defaults to the reference or SHA for that event.
           # Otherwise, uses the default branch.
           # Poner en VAR
-          ref: '${MX100_BRANCH}'
+          ref: '${{vars.MX100_BRANCH}}'
 
           # Personal access token (PAT) used to fetch the repository. The PAT is configured
           # with the local git config, which enables your scripts to run authenticated git
@@ -55,8 +55,7 @@ jobs:
           # [Learn more about creating and using encrypted secrets](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets)
           #
           # Default: ${{ github.token }}
-          # Poner en Secret VAR
-          token: '${MX100_PAT}'
+          token: '${{secrets.MX100_PAT}}'
 
           # Relative path under $GITHUB_WORKSPACE to place the repository
           path: ''
