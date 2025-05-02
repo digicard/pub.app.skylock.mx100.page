@@ -70,6 +70,7 @@ jobs:
 
           # Copy the install script to the public directory
           cp setup/install.sh public
+          cp setup/utils/detect.sh public
 
           # Create drivers directory and copy driver files
           cp setup/drivers/* public/drivers
